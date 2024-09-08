@@ -1,4 +1,3 @@
-// src/App.js
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import FeedbackForm from './components/FeedbackForm';
@@ -10,7 +9,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 function App() {
     const [token, setToken] = useState(localStorage.getItem('token'));
     const [userName, setUserName] = useState(localStorage.getItem('userName') || '');
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     useEffect(() => {
         const storedToken = localStorage.getItem('token');
@@ -49,10 +48,16 @@ function App() {
                 token ? <Navigate to="/" /> : <Register />
             } />
             <Route path="/" element={
-                <ProtectedRoute token={token}>
-                    <FeedbackForm userName={userName} onLogout={handleLogout} />
-                </ProtectedRoute>
+                token ? (
+                    <ProtectedRoute token={token}>
+                        <FeedbackForm userName={userName} onLogout={handleLogout} />
+                    </ProtectedRoute>
+                ) : (
+                    <Navigate to="/welcome" />
+                )
             } />
+            {/* Fallback route to redirect to welcome page */}
+            <Route path="*" element={<Navigate to="/welcome" />} />
         </Routes>
     );
 }
